@@ -1,20 +1,17 @@
 #include "GraphiX.h"
-
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-
 
 ISR(TIMER0_COMPA_vect){
 
     DDRC &= ~(1<<1); // disable pixels
 
-    lineCounter++;
-    if(lineCounter > 318) lineCounter = 0;
-
     switch(lineCounter){
         case 23:
             CAN_DRAW;
+            line = 0;
+            cycleTracker = 0;
             break;
 
         case 310:
@@ -39,18 +36,23 @@ ISR(TIMER0_COMPA_vect){
         _delay_us(HSYNC);
         DDRC &= ~(1<<PINC0);
     }
+    done = 0;
 }
 
 ISR(TIMER0_COMPB_vect){
-    for(unsigned char i = 0 ; i<width ; i++){
-        DDRA = frame[0][i];
+    unsigned char *thisLine = frame[line];
+    for(unsigned char i = 0 ; i<WIDTH ; i++){
+        DDRA = thisLine[i];
     }
     DDRA = 7;
 }
 
 int main(){
-
-    for(unsigned char i = 0 ; i<width ; i++) frame[0][i] = 7*(i&1);
+    for(unsigned char l = 0 ; l < HEIGHT ; l++){
+        for(unsigned char i = 0 ; i < WIDTH ; i++){
+            frame[l][i] = i^~l;
+        }
+    }
 
     MCUCR |= (1<<PUD);
     TCCR0A = 0x02;
@@ -64,9 +66,20 @@ int main(){
 
     sei();
     
-    while(1){
-
+    lineIncrementations:
+    lineCounter++;
+    if(lineCounter > 318) lineCounter = 0;
+    
+    cycleTracker++;
+    if(cycleTracker == 3){
+        line++;
+        cycleTracker = 0;
     }
+
+    done = 1;
+
+    while(done){}
+    goto lineIncrementations;
 
     return 0;
 }
