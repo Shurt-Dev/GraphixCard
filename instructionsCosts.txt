@@ -1,0 +1,6 @@
+You can use up to 100 points per frame.
+If the sum of the cost of the intructions you want to use is over 100, it will take more
+than 1 frame to calculate it, therefore might cause visual glitches.
+
+1 - fillScreen = 180
+2 - addScreen = 180

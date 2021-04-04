@@ -3,13 +3,25 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+volatile unsigned short lineCounter = 0;
+volatile bool vsync = 0, done = 0, opovf = 0;
+volatile unsigned char line = 0, cycleTracker = 0;
+unsigned char frame[HEIGHT][WIDTH] = {0};
+
 ISR(TIMER0_COMPA_vect){
 
-    DDRC &= ~(1<<1); // disable pixels
+    lineCounter++;
+    if(lineCounter > 318) lineCounter = 0;
+
+    cycleTracker = (++cycleTracker) & 3;
+    line += !cycleTracker;
 
     switch(lineCounter){
         case 23:
             CAN_DRAW;
+            break;
+
+        case 30:
             line = 0;
             cycleTracker = 0;
             break;
@@ -40,9 +52,15 @@ ISR(TIMER0_COMPA_vect){
 }
 
 ISR(TIMER0_COMPB_vect){
-    unsigned char *thisLine = frame[line];
-    for(unsigned char i = 0 ; i<WIDTH ; i++){
-        DDRA = thisLine[i];
+    if(lineCounter<30){
+        for(unsigned char i = 0 ; i < WIDTH ; i++){
+            DDRA = ~DDRA;
+        }
+    }else{
+        unsigned char *thisLine = frame[line];
+        for(unsigned char i = 0 ; i < WIDTH ; i++){
+            DDRA = thisLine[i];
+        }
     }
     DDRA = 7;
 }
@@ -50,7 +68,7 @@ ISR(TIMER0_COMPB_vect){
 int main(){
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            frame[l][i] = i^~l;
+            frame[l][i] = i%l;
         }
     }
 
@@ -58,28 +76,23 @@ int main(){
     TCCR0A = 0x02;
     TCCR0B = 0x02;
     OCR0A = 159;
-    OCR0B = 39;
+    OCR0B = 43;
     TIMSK0 = 0x02;
 
-    PORTC |= 1<<1;
     PORTA = 0xFF;
 
     sei();
     
-    lineIncrementations:
-    lineCounter++;
-    if(lineCounter > 318) lineCounter = 0;
-    
-    cycleTracker++;
-    if(cycleTracker == 3){
-        line++;
-        cycleTracker = 0;
+    processShit:
+
+    if(!DRAW_CAN){
+        addScreen();
     }
 
     done = 1;
 
     while(done){}
-    goto lineIncrementations;
+    goto processShit;
 
     return 0;
 }
