@@ -20,6 +20,19 @@ void addScreen(char amount){
     }
 }
 
+void rShiftScreen(unsigned char amount){
+    for(unsigned char l = 0; l < HEIGHT; l++){
+        unsigned char *thisLine = frame[l];
+        for(unsigned char i = WIDTH; i > 0 ; i--){
+            if(i - amount < 0){
+                thisLine[i] = thisLine[WIDTH-amount+i];
+            }else{
+                thisLine[i] = thisLine[i-amount];
+            }
+        }
+    }
+}
+
 void setPixel(unsigned char x, unsigned char y, unsigned char color){
     frame[y][x] = color;
 }
@@ -37,7 +50,7 @@ void drawLine(unsigned char xs, unsigned char ys, unsigned char xe, unsigned cha
 
 }
 
-void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK){
+void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color){
     unsigned char *firstLine = frame[ys];
     unsigned char *secondline = frame[ye];
     for(unsigned char i = xs ; i < xe ; i++){
@@ -47,5 +60,14 @@ void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned cha
     for(unsigned char i = ys+1 ; i < ye ; i++){
         frame[i][xs] = color;
         frame[i][xe] = color;
+    }
+}
+
+void drawBox(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color){
+    for(unsigned char l = ys ; l < ye ; l++){
+        unsigned char *thisLine = frame[l];
+        for(unsigned char i = xs ; i < xe ; i++){
+            thisLine[i] = color;
+        }
     }
 }

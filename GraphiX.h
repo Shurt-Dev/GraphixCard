@@ -7,8 +7,8 @@
 #define DEBUG
 
 #define HSYNC 4
-#define WIDTH 123
-#define HEIGHT 123
+#define WIDTH 120
+#define HEIGHT 120
 #define START_FRAME 23
 #define INCLINE 40
 
@@ -21,12 +21,24 @@ extern volatile bool vsync, done, opovf;
 extern volatile unsigned char line;
 extern unsigned char frame[HEIGHT][WIDTH];
 
+//Fills the whole screen with a color.
 void fillScreen(unsigned char color=BLACK);
+//Adds a value to each pixel.
 void addScreen(char amount=1);
+//Shifts the whole screen to the right by an amount.
+//WARNING: this funtion is experimental and shouldn't be used a lot!
+void rShiftScreen(unsigned char amount=1);
+//Changes a single pixel
 void setPixel(unsigned char x, unsigned char y, unsigned char color=BLACK);
+//Draws a horizontal line.
 void drawHLine(unsigned char line, unsigned char start, unsigned char end, unsigned char color=BLACK);
+//Draws a vertical line.
 void drawVLine(unsigned char column, unsigned char start, unsigned char end, unsigned char color=BLACK);
+//Draw any line.
 void drawLine(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
+//Draws a hollow rectangle.
 void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
+//Draws a filled rectangle.
+void drawBox(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
 
 #endif

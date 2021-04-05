@@ -75,21 +75,17 @@ int main(){
     PORTC = 0xFF;
 
     #ifdef DEBUG
-    DDRA = 0xff;
+    DDRA = 0xFF;
     PORTA = 128;
-    drawVLine(40,30,50,WHITE);
-    drawVLine(80,30,50,WHITE);
-    drawHLine(80,30,90,WHITE);
-    drawRect(0,0,122,122,WHITE);
+    drawBox(30,30,90,90,WHITE);
     PORTA = 0;
     #endif
 
     sei();
-    
+
     processShit:
 
     if(CAN_CALCULATE){
-        //addScreen();
     }
 
     done = 1;
