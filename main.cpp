@@ -1,4 +1,5 @@
 #include "GraphiX.h"
+#include "Colors.h"
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -54,13 +55,13 @@ ISR(TIMER0_COMPB_vect){
             DDRC = thisLine[i];
         }
     }
-    DDRC = 7;
+    DDRC = BLACK;
 }
 
 int main(){
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            frame[l][i] = 7;
+            frame[l][i] = BLACK;
         }
     }
 
@@ -76,7 +77,7 @@ int main(){
     #ifdef DEBUG
     DDRA = 0xff;
     PORTA = 128;
-    addScreen();
+    drawHLine(60,0,123,WHITE);
     PORTA = 0;
     #endif
 

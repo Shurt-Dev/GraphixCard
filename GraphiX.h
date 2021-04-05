@@ -1,10 +1,10 @@
 #ifndef GRAPHIX_H
 #define GRAPHIX_H   
 
-#pragma region global_variables
-#define F_CPU 20000000UL
+#include "Colors.h"
 
-//#define DEBUG
+#define F_CPU 20000000UL
+#define DEBUG
 
 #define HSYNC 4
 #define WIDTH 123
@@ -20,10 +20,10 @@ extern volatile unsigned short lineCounter;
 extern volatile bool vsync, done, opovf;
 extern volatile unsigned char line;
 extern unsigned char frame[HEIGHT][WIDTH];
-#pragma endregion
 
-void fillScreen(unsigned char color=7);
+void fillScreen(unsigned char color=BLACK);
 void addScreen(char amount=1);
-void setPixel(unsigned char x, unsigned char y, unsigned char color=7);
+void setPixel(unsigned char x, unsigned char y, unsigned char color=BLACK);
+void drawHLine(unsigned char line, unsigned char start, unsigned char end, unsigned char color=BLACK);
 
 #endif
