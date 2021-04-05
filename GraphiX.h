@@ -21,4 +21,5 @@ extern unsigned char frame[HEIGHT][WIDTH];
 
 void fillScreen(unsigned char color=7);
 void addScreen(char amount=1);
+
 #endif
