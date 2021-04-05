@@ -5,25 +5,19 @@
 
 volatile unsigned short lineCounter = 0;
 volatile bool vsync = 0, done = 0, opovf = 0;
-volatile unsigned char line = 0, cycleTracker = 0;
+volatile unsigned char line = 0;
 unsigned char frame[HEIGHT][WIDTH] = {0};
 
 ISR(TIMER0_COMPA_vect){
 
     lineCounter++;
     if(lineCounter > 318) lineCounter = 0;
-
-    cycleTracker = (++cycleTracker) & 3;
-    line += !cycleTracker;
+    if(lineCounter>INCLINE) line += lineCounter&1;
 
     switch(lineCounter){
-        case 23:
+        case START_FRAME:
             CAN_DRAW;
-            break;
-
-        case 30:
-            line = 0;
-            cycleTracker = 0;
+            line=0;
             break;
 
         case 310:
@@ -40,35 +34,33 @@ ISR(TIMER0_COMPA_vect){
     }
 
     if(vsync){
-        DDRC &= ~(1<<PINC0);
+        DDRD &= 127;
         _delay_us(HSYNC);
-        DDRC |= 1<<PINC0;
+        DDRD |= 128;
     }else{
-        DDRC |= 1<<PINC0;
+        DDRD |= 128;
         _delay_us(HSYNC);
-        DDRC &= ~(1<<PINC0);
+        DDRD &= 127;
     }
     done = 0;
 }
 
 ISR(TIMER0_COMPB_vect){
-    if(lineCounter<30){
-        for(unsigned char i = 0 ; i < WIDTH ; i++){
-            DDRA = ~DDRA;
-        }
+    if(lineCounter < INCLINE || line >= HEIGHT){
+        DDRC = 0;
     }else{
         unsigned char *thisLine = frame[line];
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            DDRA = thisLine[i];
+            DDRC = thisLine[i];
         }
     }
-    DDRA = 7;
+    DDRC = 7;
 }
 
 int main(){
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            frame[l][i] = i%l;
+            frame[l][i] = 7;
         }
     }
 
@@ -79,18 +71,23 @@ int main(){
     OCR0B = 43;
     TIMSK0 = 0x02;
 
-    PORTA = 0xFF;
+    PORTC = 0xFF;
+
+    #ifdef DEBUG
+    DDRA = 0xff;
+    PORTA = 128;
+    addScreen();
+    PORTA = 0;
+    #endif
 
     sei();
     
     processShit:
 
-    if(!DRAW_CAN){
-        addScreen();
+    if(CAN_CALCULATE){
     }
 
     done = 1;
-
     while(done){}
     goto processShit;
 

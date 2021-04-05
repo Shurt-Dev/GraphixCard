@@ -18,3 +18,7 @@ void addScreen(char amount){
         }
     }
 }
+
+void setPixel(unsigned char x, unsigned char y, unsigned char color){
+    frame[y][x] = color;
+}
