@@ -5,4 +5,6 @@ than 1 frame to calculate it, therefore might cause visual glitches.
 1 - fillScreen = 165
 2 - addScreen = 240
 3 - setPixel = 0
-4 - drawHLine = 0.015 per pixel
+4 - drawHLine = 0.012 per pixel
+5 - drawVLine = 0.014 per pixel
+7 - drawRect = 0.016 per pixel

@@ -25,5 +25,8 @@ void fillScreen(unsigned char color=BLACK);
 void addScreen(char amount=1);
 void setPixel(unsigned char x, unsigned char y, unsigned char color=BLACK);
 void drawHLine(unsigned char line, unsigned char start, unsigned char end, unsigned char color=BLACK);
+void drawVLine(unsigned char column, unsigned char start, unsigned char end, unsigned char color=BLACK);
+void drawLine(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
+void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
 
 #endif

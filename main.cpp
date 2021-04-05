@@ -77,7 +77,10 @@ int main(){
     #ifdef DEBUG
     DDRA = 0xff;
     PORTA = 128;
-    drawHLine(60,0,123,WHITE);
+    drawVLine(40,30,50,WHITE);
+    drawVLine(80,30,50,WHITE);
+    drawHLine(80,30,90,WHITE);
+    drawRect(0,0,122,122,WHITE);
     PORTA = 0;
     #endif
 
@@ -86,6 +89,7 @@ int main(){
     processShit:
 
     if(CAN_CALCULATE){
+        //addScreen();
     }
 
     done = 1;
