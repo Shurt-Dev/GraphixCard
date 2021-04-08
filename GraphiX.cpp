@@ -22,13 +22,50 @@ void addScreen(char amount){
 
 void rShiftScreen(unsigned char amount){
     for(unsigned char l = 0; l < HEIGHT; l++){
-        unsigned char *thisLine = frame[l];
-        for(unsigned char i = WIDTH; i > 0 ; i--){
-            if(i - amount < 0){
-                thisLine[i] = thisLine[WIDTH-amount+i];
-            }else{
-                thisLine[i] = thisLine[i-amount];
+        for(unsigned char loops = 0 ; loops < amount ; loops++){
+            unsigned char *thisLine = frame[l];
+            unsigned char bufferPixel = thisLine[WIDTH-1];
+            for(unsigned char i = WIDTH-1 ; i > 0 ; i--){
+                thisLine[i] = thisLine[i-1];
             }
+            thisLine[0] = bufferPixel;
+        }
+    }
+}
+
+void lShiftScreen(unsigned char amount){
+    for(unsigned char l = 0; l < HEIGHT; l++){
+        for(unsigned char loops = 0 ; loops < amount ; loops++){
+            unsigned char *thisLine = frame[l];
+            unsigned char bufferPixel = thisLine[0];
+            for(unsigned char i = 0 ; i < WIDTH-1 ; i++){
+                thisLine[i] = thisLine[i+1];
+            }
+            thisLine[WIDTH-1] = bufferPixel;
+        }
+    }
+}
+
+void uShiftScreen(unsigned char amount){
+    for(unsigned char i = 0; i < WIDTH; i++){
+        for(unsigned char loops = 0 ; loops < amount ; loops++){
+            unsigned char bufferPixel = frame[0][i];
+            for(unsigned char l = 0 ; l < HEIGHT-1 ; l++){
+                frame[l][i] = frame[l+1][i];
+            }
+            frame[HEIGHT-1][i] = bufferPixel;
+        }
+    }
+}
+
+void dShiftScreen(unsigned char amount){
+    for(unsigned char i = 0; i < WIDTH; i++){
+        for(unsigned char loops = 0 ; loops < amount ; loops++){
+            unsigned char bufferPixel = frame[HEIGHT-1][i];
+            for(unsigned char l = HEIGHT-1 ; l > 0 ; l--){
+                frame[l][i] = frame[l-1][i];
+            }
+            frame[0][i] = bufferPixel;
         }
     }
 }

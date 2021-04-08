@@ -26,8 +26,13 @@ void fillScreen(unsigned char color=BLACK);
 //Adds a value to each pixel.
 void addScreen(char amount=1);
 //Shifts the whole screen to the right by an amount.
-//WARNING: this funtion is experimental and shouldn't be used a lot!
 void rShiftScreen(unsigned char amount=1);
+//Shifts the whole screen to the left by an amount.
+void lShiftScreen(unsigned char amount=1);
+//Shifts the whole screen upwards by an amount.
+void uShiftScreen(unsigned char amount=1);
+//Shifts the whole screen downwards by an amount.
+void dShiftScreen(unsigned char amount=1);
 //Changes a single pixel
 void setPixel(unsigned char x, unsigned char y, unsigned char color=BLACK);
 //Draws a horizontal line.
