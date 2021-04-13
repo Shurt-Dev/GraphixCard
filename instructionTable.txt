@@ -1,16 +1,21 @@
-You can use up to 100 points per frame.
-If the sum of the cost of the intructions you want to use is over 100, it will take more
-than 1 frame to calculate it, therefore might cause visual glitches.
+Here's the available instructions with their parameters.
+There's around 2800 uS available for calculus per frame.
+If the sum of the time it takes to calculate the intructions exeeds 2800 uS,
+it may create visual glitches, such asd chopped frames.
 
 ---------------------------------------------------------------------------------
- #  | Name          | Parameters                                     | Cost     |
+ #  | Name          | Parameters                                     | Time (us)|
 ---------------------------------------------------------------------------------
- 01 | fillScreen    | Color                                          | 165      |
- ?? | addScreen     | Amount                                         | 240      |
- 02 | rShiftScreen  | Amount                                         | ???      |
- 06 | setPixel      | X Y Color                                      | 0        |
- 07 | drawHLine     | Line Xstart Xend Color                         | 0.010/px |
- 08 | drawVLine     | Column Ystart Yend Color                       | 0.013/px |
- 09 | drawRect      | Xstart Ystart Xend Yend Color                  | 0.016/px |
- 10 | drawBox       | Xstart Ystart Xend Yend Color                  | 0.011/px |
+ ?? | fillScreen    | Color                                          | 4300     |
+ ?? | addScreen     | Amount                                         | 6500     |
+ ?? | rShiftScreen  | Amount                                         | 5800     |
+ ?? | lShiftScreen  | Amount                                         | 5800     |
+ ?? | uShiftScreen  | Amount                                         | 5900     |
+ ?? | dShiftScreen  | Amount                                         | 5900     |
+ ?? | setPixel      | X Y Color                                      | 0        |
+ ?? | drawHLine     | Line Xstart Xend Color                         | 0.33/px  |
+ ?? | drawVLine     | Column Ystart Yend Color                       | 0.46/px  |
+ ?? | drawLine      | x1 y1 x2 y2 Color                              | 10/px    |
+ ?? | drawRect      | Xstart Ystart Xend Yend Color                  | 0.29/px  |
+ ?? | drawBox       | Xstart Ystart Xend Yend Color                  | 0.34/px  |
 ---------------------------------------------------------------------------------

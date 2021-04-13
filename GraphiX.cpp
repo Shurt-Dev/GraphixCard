@@ -83,8 +83,43 @@ void drawVLine(unsigned char column, unsigned char start, unsigned char end, uns
     for(unsigned char i = start ; i < end ; i++) frame[i][column] = color;
 }
 
-void drawLine(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color){
+void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char color){
+    float dx = x2>x1 ? x2-x1 : x1-x2;
+    float dy = y2>y1 ? y2-y1 : y1-y2;
 
+    if(dx > dy){
+        if(x2 > x1){
+            dy = (y2-y1)/dx;
+            float yPos = y1;
+            for(unsigned char i = x1 ; i < x2 ; i++){
+                frame[(unsigned char) yPos][i] = color;
+                yPos += dy;
+            }
+        }else{
+            dy = (y2-y1)/dx;
+            float yPos = y1;
+            for(unsigned char i = x1 ; i > x2 ; i--){
+                frame[(unsigned char) yPos][i] = color;
+                yPos += dy;
+            }
+        }
+    }else{
+        if(y2 > y1){
+            dx = (x2-x1)/dy;
+            float xPos = x1;
+            for(unsigned char i = y1 ; i < y2 ; i++){
+                frame[i][(unsigned char)xPos] = color;
+                xPos += dx;
+            }
+        }else{
+            dx = (x2-x1)/dy;
+            float xPos = x1;
+            for(unsigned char i = y1 ; i > y2 ; i--){
+                frame[i][(unsigned char)xPos] = color;
+                xPos += dx;
+            }
+        }
+    }
 }
 
 void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color){

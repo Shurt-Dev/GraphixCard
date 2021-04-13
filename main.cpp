@@ -3,11 +3,20 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <math.h>
 
 volatile unsigned short lineCounter = 0;
 volatile bool vsync = 0, done = 0, opovf = 0;
 volatile unsigned char line = 0;
 unsigned char frame[HEIGHT][WIDTH] = {0};
+
+void setupTimer0(){
+    TCCR0A = 0x02; // CTC
+    TCCR0B = 0x02; // prescaler = 8
+    OCR0A = 159;   // f = 15625
+    OCR0B = 43;    // begin drawing 15 uS after int
+    TIMSK0 = 0x02; // compA interrupt
+}
 
 ISR(TIMER0_COMPA_vect){
 
@@ -48,14 +57,14 @@ ISR(TIMER0_COMPA_vect){
 
 ISR(TIMER0_COMPB_vect){
     if(lineCounter < INCLINE || line >= HEIGHT){
-        DDRC = 0;
+        DDRA = 0;
     }else{
         unsigned char *thisLine = frame[line];
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            DDRC = thisLine[i];
+            DDRA = thisLine[i];
         }
     }
-    DDRC = BLACK;
+    DDRA = BLACK;
 }
 
 int main(){
@@ -65,25 +74,17 @@ int main(){
         }
     }
 
-    MCUCR |= (1<<PUD);
-    TCCR0A = 0x02;
-    TCCR0B = 0x02;
-    OCR0A = 159;
-    OCR0B = 43;
-    TIMSK0 = 0x02;
+    MCUCR |= (1<<PUD); //Disable pullup resistors
 
-    PORTC = 0xFF;
+    setupTimer0();
+
+    PORTA = 0xFF;
 
     #ifdef DEBUG
-    DDRA = 0xFF;
-    PORTA = 128;
-    drawHLine(90,30,90,WHITE);
-    drawVLine(30,80,90,WHITE);
-    drawVLine(90,80,90,WHITE);
-    drawVLine(40,30,60,WHITE);
-    drawVLine(80,30,60,WHITE);
-    drawRect(10,10,110,110,WHITE);
-    PORTA = 0;
+    DDRC = 1;
+    PORTC = 1;
+    drawBox(0,0,10,10,WHITE);
+    PORTC = 0;
     #endif
 
     sei();
@@ -91,8 +92,6 @@ int main(){
     processShit:
 
     if(CAN_CALCULATE){
-        dShiftScreen();
-        lShiftScreen();
     }
 
     done = 1;

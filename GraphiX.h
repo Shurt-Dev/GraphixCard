@@ -9,6 +9,7 @@
 #define HSYNC 4
 #define WIDTH 120
 #define HEIGHT 120
+#define TOTALPIXELS 14400
 #define START_FRAME 23
 #define INCLINE 40
 
@@ -40,7 +41,7 @@ void drawHLine(unsigned char line, unsigned char start, unsigned char end, unsig
 //Draws a vertical line.
 void drawVLine(unsigned char column, unsigned char start, unsigned char end, unsigned char color=BLACK);
 //Draw any line.
-void drawLine(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
+void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char color=BLACK);
 //Draws a hollow rectangle.
 void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
 //Draws a filled rectangle.
