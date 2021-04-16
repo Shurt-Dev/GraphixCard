@@ -6,35 +6,39 @@
 #include <math.h>
 
 volatile unsigned short lineCounter = 0;
-volatile bool vsync = 0, done = 0, opovf = 0;
-volatile unsigned char line = 0;
+volatile bool done = 0, vsync = 0, can_draw = 0;
+volatile unsigned char line = 0, state = HSYNC;
 unsigned char frame[HEIGHT][WIDTH] = {0};
 
 void setupTimer0(){
     TCCR0A = 0x02; // CTC
     TCCR0B = 0x02; // prescaler = 8
-    OCR0A = 159;   // f = 15625
-    OCR0B = 43;    // begin drawing 15 uS after int
-    TIMSK0 = 0x02; // compA interrupt
+    OCR0A = 159;   // f = 15625 Hz
+    OCR0B = START_DRAW_LINE;    // begin drawing 15 uS after int
+    TIMSK0 = 0x06; // compA interrupt
 }
 
 ISR(TIMER0_COMPA_vect){
 
+    #ifdef DEBUG
+    PORTC = 1;
+    #endif
+
     lineCounter++;
     if(lineCounter > 318) lineCounter = 0;
     if(lineCounter>INCLINE) line += lineCounter&1;
+    if(line >= HEIGHT) can_draw = 0;
 
     switch(lineCounter){
-        case START_FRAME:
-            CAN_DRAW;
+        case 23:
             line=0;
             break;
 
-        case 310:
-            CANT_DRAW;
+        case INCLINE:
+            can_draw = 1;
             break;
 
-        case 313:
+        case 312:
             vsync = 1;
             break;
 
@@ -45,32 +49,61 @@ ISR(TIMER0_COMPA_vect){
 
     if(vsync){
         DDRD &= 127;
-        _delay_us(HSYNC);
-        DDRD |= 128;
     }else{
         DDRD |= 128;
-        _delay_us(HSYNC);
-        DDRD &= 127;
     }
+    OCR0B = STOP_HSYNC;
+    state = FPORCH;
     done = 0;
+
+    #ifdef DEBUG
+    PORTC = 1;
+    #endif
 }
 
 ISR(TIMER0_COMPB_vect){
-    if(lineCounter < INCLINE || line >= HEIGHT){
-        DDRA = 0;
-    }else{
-        unsigned char *thisLine = frame[line];
-        for(unsigned char i = 0 ; i < WIDTH ; i++){
-            DDRA = thisLine[i];
-        }
+    #ifdef DEBUG
+    PORTC = 1;
+    #endif
+
+    switch(state){
+        case FPORCH:
+            if(vsync){
+                DDRD |= 128;
+            }else{
+                DDRD &= 127;
+            }
+            OCR0B = START_DRAW_LINE;
+            state = DRAW;
+            DDRA = BLACK;
+            break;
+
+        case BURST:
+            break;
+
+        case DRAW:
+            if(can_draw){
+                unsigned char *thisLine = frame[line];
+                for(unsigned char i = 0 ; i < WIDTH ; i++){
+                    DDRA = thisLine[i];
+                }
+            }else{
+                DDRA = WHITE;
+            }
+            DDRA = BLACK;
+            state = HSYNC;
+            break;
     }
-    DDRA = BLACK;
+
+    #ifdef DEBUG
+    PORTC = 0;
+    #endif
 }
 
 int main(){
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            frame[l][i] = BLACK;
+            frame[l][i] = l+i;
         }
     }
 
@@ -83,15 +116,16 @@ int main(){
     #ifdef DEBUG
     DDRC = 1;
     PORTC = 1;
-    drawBox(0,0,10,10,WHITE);
     PORTC = 0;
     #endif
+    drawBox(0,0,10,10,WHITE);
 
     sei();
 
     processShit:
 
     if(CAN_CALCULATE){
+        dShiftScreen();
     }
 
     done = 1;

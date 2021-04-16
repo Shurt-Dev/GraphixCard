@@ -4,23 +4,29 @@
 #include "Colors.h"
 
 #define F_CPU 20000000UL
-#define DEBUG
+//#define DEBUG
 
-#define HSYNC 4
 #define WIDTH 120
 #define HEIGHT 120
 #define TOTALPIXELS 14400
 #define START_FRAME 23
 #define INCLINE 40
 
-#define CAN_DRAW (TIMSK0 |= 1<<OCIE0B)
-#define CANT_DRAW (TIMSK0 &= ~(1<<OCIE0B))
-#define CAN_CALCULATE !(lineCounter < INCLINE || line >= HEIGHT)
+#define HSYNC 0
+#define FPORCH 1
+#define BURST 2
+#define REST 3
+#define DRAW 4
+
+#define STOP_HSYNC 12
+#define START_DRAW_LINE 43
 
 extern volatile unsigned short lineCounter;
-extern volatile bool vsync, done, opovf;
-extern volatile unsigned char line;
+extern volatile bool done, vsync, can_draw;
+extern volatile unsigned char line, state;
 extern unsigned char frame[HEIGHT][WIDTH];
+
+#define CAN_CALCULATE !(lineCounter < INCLINE || line >= HEIGHT)
 
 //Fills the whole screen with a color.
 void fillScreen(unsigned char color=BLACK);
