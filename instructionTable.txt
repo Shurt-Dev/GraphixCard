@@ -15,7 +15,7 @@ it may create visual glitches, such asd chopped frames.
  ?? | setPixel      | X Y Color                                      | 0        |
  ?? | drawHLine     | Line Xstart Xend Color                         | 0.33/px  |
  ?? | drawVLine     | Column Ystart Yend Color                       | 0.46/px  |
- ?? | drawLine      | x1 y1 x2 y2 Color                              | 10/px    |
+ ?? | drawLine      | x1 y1 x2 y2 Color                              | 1.22/px  |
  ?? | drawRect      | Xstart Ystart Xend Yend Color                  | 0.29/px  |
  ?? | drawBox       | Xstart Ystart Xend Yend Color                  | 0.34/px  |
 ---------------------------------------------------------------------------------

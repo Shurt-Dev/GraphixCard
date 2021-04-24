@@ -3,8 +3,8 @@
 
 #include "Colors.h"
 
-#define F_CPU 20000000UL
-//#define DEBUG
+#define DEBUG
+#define GREYSCALE
 
 #define WIDTH 120
 #define HEIGHT 120
@@ -12,14 +12,15 @@
 #define START_FRAME 23
 #define INCLINE 40
 
-#define HSYNC 0
-#define FPORCH 1
-#define BURST 2
-#define REST 3
-#define DRAW 4
+#define FPORCH 0
+#define START_BURST 1
+#define STOP_BURST 2
+#define DRAW_LINE 3
 
-#define STOP_HSYNC 12
-#define START_DRAW_LINE 43
+#define TIMING_STOP_HSYNC 12
+#define TIMING_START_BURST 20
+#define TIMING_STOP_BURST 28
+#define TIMING_START_DRAW_LINE 40
 
 extern volatile unsigned short lineCounter;
 extern volatile bool done, vsync, can_draw;

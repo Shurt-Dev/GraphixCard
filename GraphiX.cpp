@@ -84,38 +84,40 @@ void drawVLine(unsigned char column, unsigned char start, unsigned char end, uns
 }
 
 void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char color){
-    float dx = x2>x1 ? x2-x1 : x1-x2;
-    float dy = y2>y1 ? y2-y1 : y1-y2;
+    int16_t dx = x2-x1;
+    int16_t dy = y2-y1;
+    #define SCALE_FACTOR 9
+    #define abs(x) (x<0 ? -x : x)
 
-    if(dx > dy){
+    if(abs(dx) > abs(dy)){
         if(x2 > x1){
-            dy = (y2-y1)/dx;
-            float yPos = y1;
+            dy = (dy << SCALE_FACTOR) / abs(dx);
+            uint16_t yPos = y1 << SCALE_FACTOR;
             for(unsigned char i = x1 ; i < x2 ; i++){
-                frame[(unsigned char) yPos][i] = color;
+                frame[yPos >> SCALE_FACTOR][i] = color;
                 yPos += dy;
             }
         }else{
-            dy = (y2-y1)/dx;
-            float yPos = y1;
+            dy = (dy << SCALE_FACTOR) / abs(dx);
+            uint16_t yPos = y1 << SCALE_FACTOR;
             for(unsigned char i = x1 ; i > x2 ; i--){
-                frame[(unsigned char) yPos][i] = color;
+                frame[yPos >> SCALE_FACTOR][i] = color;
                 yPos += dy;
             }
         }
     }else{
         if(y2 > y1){
-            dx = (x2-x1)/dy;
-            float xPos = x1;
+            dx = (dx << SCALE_FACTOR) / abs(dy);
+            uint16_t xPos = x1 << SCALE_FACTOR;
             for(unsigned char i = y1 ; i < y2 ; i++){
-                frame[i][(unsigned char)xPos] = color;
+                frame[i][xPos >> SCALE_FACTOR] = color;
                 xPos += dx;
             }
         }else{
-            dx = (x2-x1)/dy;
-            float xPos = x1;
+            dx = (dx << SCALE_FACTOR) / abs(dy);
+            uint16_t xPos = x1 << SCALE_FACTOR;
             for(unsigned char i = y1 ; i > y2 ; i--){
-                frame[i][(unsigned char)xPos] = color;
+                frame[i][xPos >> SCALE_FACTOR] = color;
                 xPos += dx;
             }
         }

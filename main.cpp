@@ -7,22 +7,18 @@
 
 volatile unsigned short lineCounter = 0;
 volatile bool done = 0, vsync = 0, can_draw = 0;
-volatile unsigned char line = 0, state = HSYNC;
+volatile unsigned char line = 0, state = FPORCH;
 unsigned char frame[HEIGHT][WIDTH] = {0};
 
 void setupTimer0(){
     TCCR0A = 0x02; // CTC
     TCCR0B = 0x02; // prescaler = 8
     OCR0A = 159;   // f = 15625 Hz
-    OCR0B = START_DRAW_LINE;    // begin drawing 15 uS after int
+    OCR0B = TIMING_START_DRAW_LINE;    // begin drawing 15 uS after int
     TIMSK0 = 0x06; // compA interrupt
 }
 
 ISR(TIMER0_COMPA_vect){
-
-    #ifdef DEBUG
-    PORTC = 1;
-    #endif
 
     lineCounter++;
     if(lineCounter > 318) lineCounter = 0;
@@ -52,19 +48,13 @@ ISR(TIMER0_COMPA_vect){
     }else{
         DDRD |= 128;
     }
-    OCR0B = STOP_HSYNC;
+
+    OCR0B = TIMING_STOP_HSYNC;
     state = FPORCH;
     done = 0;
-
-    #ifdef DEBUG
-    PORTC = 1;
-    #endif
 }
 
 ISR(TIMER0_COMPB_vect){
-    #ifdef DEBUG
-    PORTC = 1;
-    #endif
 
     switch(state){
         case FPORCH:
@@ -73,15 +63,34 @@ ISR(TIMER0_COMPB_vect){
             }else{
                 DDRD &= 127;
             }
-            OCR0B = START_DRAW_LINE;
-            state = DRAW;
+            #ifndef GREYSCALE
+            if(can_draw){
+                OCR0B = TIMING_START_BURST;
+                state = START_BURST;
+            }else{
+                OCR0B = TIMING_START_DRAW_LINE;
+                state = DRAW_LINE;
+            }
+            #endif
+            #ifdef GREYSCALE
+            OCR0B = TIMING_START_DRAW_LINE;
+            state = DRAW_LINE;
+            #endif
+            break;
+
+        case START_BURST:
+            DDRA = BURST;
+            OCR0B = TIMING_STOP_BURST;
+            state = STOP_BURST;
+            break;
+
+        case STOP_BURST:
             DDRA = BLACK;
+            OCR0B = TIMING_START_DRAW_LINE;
+            state = DRAW_LINE;
             break;
 
-        case BURST:
-            break;
-
-        case DRAW:
+        case DRAW_LINE:
             if(can_draw){
                 unsigned char *thisLine = frame[line];
                 for(unsigned char i = 0 ; i < WIDTH ; i++){
@@ -91,19 +100,15 @@ ISR(TIMER0_COMPB_vect){
                 DDRA = WHITE;
             }
             DDRA = BLACK;
-            state = HSYNC;
             break;
     }
-
-    #ifdef DEBUG
-    PORTC = 0;
-    #endif
 }
 
 int main(){
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            frame[l][i] = l+i;
+            //frame[l][i] = (unsigned char)((16.0/120) * i) |  (unsigned char)((16.0/120) * l)<<4;
+            frame[l][i] = BLACK;
         }
     }
 
@@ -116,16 +121,21 @@ int main(){
     #ifdef DEBUG
     DDRC = 1;
     PORTC = 1;
+    drawLine(59,59,99,89,WHITE);
     PORTC = 0;
     #endif
-    drawBox(0,0,10,10,WHITE);
 
     sei();
-
+    float bob=0;
+    int bab=0;
     processShit:
 
     if(CAN_CALCULATE){
-        dShiftScreen();
+        if(bab&1){
+        drawLine(59,59,20*cos(bob)+59,20*sin(bob)+59,BLACK);
+        }else{
+        bob += 0.01;
+        drawLine(59,59,20*cos(bob)+59,20*sin(bob)+59,WHITE);}bab++;
     }
 
     done = 1;

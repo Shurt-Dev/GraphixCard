@@ -3,9 +3,11 @@
 
 namespace GrphX{
 
-    #define BLACK 7
-    #define WHITE 0
-    #define GREY 3
+    #define BURST 0x07
+
+    #define BLACK 0x1F
+    #define WHITE 0x18
+    #define GREY 0x1B
 
 }
 #endif
