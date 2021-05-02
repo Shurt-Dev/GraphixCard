@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include "GraphiX.h"
-#include <math.h>
-
+#include "lowMath.h"
 void fillScreen(unsigned char color){
     for(unsigned char l = 0; l < HEIGHT; l++){
         unsigned char *thisLine = frame[l];
@@ -86,7 +85,6 @@ void drawVLine(unsigned char column, unsigned char start, unsigned char end, uns
 void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char color){
     int16_t dx = x2-x1;
     int16_t dy = y2-y1;
-    #define SCALE_FACTOR 9
     #define abs(x) (x<0 ? -x : x)
 
     if(abs(dx) > abs(dy)){

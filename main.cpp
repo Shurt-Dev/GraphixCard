@@ -3,12 +3,13 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <math.h>
+#include "lowMath.h"
 
 volatile unsigned short lineCounter = 0;
 volatile bool done = 0, vsync = 0, can_draw = 0;
 volatile unsigned char line = 0, state = FPORCH;
 unsigned char frame[HEIGHT][WIDTH] = {0};
+unsigned char testMatrix[16][16];
 
 void setupTimer0(){
     TCCR0A = 0x02; // CTC
@@ -55,7 +56,7 @@ ISR(TIMER0_COMPA_vect){
 }
 
 ISR(TIMER0_COMPB_vect){
-
+    //PORTC = 1;
     switch(state){
         case FPORCH:
             if(vsync){
@@ -102,13 +103,21 @@ ISR(TIMER0_COMPB_vect){
             DDRA = BLACK;
             break;
     }
+    //PORTC = 0;
 }
 
 int main(){
+    unsigned char bob = 0;
+    for(unsigned char l = 0 ; l < 16 ; l++){
+        for(unsigned char i = 0 ; i < 16 ; i++){
+            testMatrix[l][i] = bob;
+            bob++;
+        }
+    }
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            //frame[l][i] = (unsigned char)((16.0/120) * i) |  (unsigned char)((16.0/120) * l)<<4;
-            frame[l][i] = BLACK;
+            frame[l][i] = testMatrix[(unsigned char)(l / 7.5)][(unsigned char)(i / 7.5)];
+            //frame[l][i] = l+i;
         }
     }
 
@@ -126,16 +135,11 @@ int main(){
     #endif
 
     sei();
-    float bob=0;
-    int bab=0;
+
     processShit:
 
     if(CAN_CALCULATE){
-        if(bab&1){
-        drawLine(59,59,20*cos(bob)+59,20*sin(bob)+59,BLACK);
-        }else{
-        bob += 0.01;
-        drawLine(59,59,20*cos(bob)+59,20*sin(bob)+59,WHITE);}bab++;
+        //addScreen();
     }
 
     done = 1;

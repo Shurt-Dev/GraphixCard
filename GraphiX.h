@@ -3,8 +3,8 @@
 
 #include "Colors.h"
 
-#define DEBUG
-#define GREYSCALE
+//#define DEBUG
+//#define GREYSCALE
 
 #define WIDTH 120
 #define HEIGHT 120
@@ -27,7 +27,7 @@ extern volatile bool done, vsync, can_draw;
 extern volatile unsigned char line, state;
 extern unsigned char frame[HEIGHT][WIDTH];
 
-#define CAN_CALCULATE !(lineCounter < INCLINE || line >= HEIGHT)
+#define CAN_CALCULATE (!can_draw)
 
 //Fills the whole screen with a color.
 void fillScreen(unsigned char color=BLACK);
