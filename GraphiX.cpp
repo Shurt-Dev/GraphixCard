@@ -1,7 +1,12 @@
 #include <avr/io.h>
 #include "GraphiX.h"
 #include "lowMath.h"
-void fillScreen(unsigned char color){
+
+void setEnabled(const bool ena){
+    enabled = ena;
+}
+
+void fillScreen(const unsigned char color){
     for(unsigned char l = 0; l < HEIGHT; l++){
         unsigned char *thisLine = frame[l];
         for(unsigned char i = 0; i < WIDTH ; i++){
@@ -10,7 +15,7 @@ void fillScreen(unsigned char color){
     }
 }
 
-void addScreen(char amount){
+void addScreen(const char amount){
     for(unsigned char l = 0; l < HEIGHT; l++){
         unsigned char *thisLine = frame[l];
         for(unsigned char i = 0; i < WIDTH ; i++){
@@ -19,7 +24,7 @@ void addScreen(char amount){
     }
 }
 
-void rShiftScreen(unsigned char amount){
+void rShiftScreen(const unsigned char amount){
     for(unsigned char l = 0; l < HEIGHT; l++){
         for(unsigned char loops = 0 ; loops < amount ; loops++){
             unsigned char *thisLine = frame[l];
@@ -32,7 +37,7 @@ void rShiftScreen(unsigned char amount){
     }
 }
 
-void lShiftScreen(unsigned char amount){
+void lShiftScreen(const unsigned char amount){
     for(unsigned char l = 0; l < HEIGHT; l++){
         for(unsigned char loops = 0 ; loops < amount ; loops++){
             unsigned char *thisLine = frame[l];
@@ -45,7 +50,7 @@ void lShiftScreen(unsigned char amount){
     }
 }
 
-void uShiftScreen(unsigned char amount){
+void uShiftScreen(const unsigned char amount){
     for(unsigned char i = 0; i < WIDTH; i++){
         for(unsigned char loops = 0 ; loops < amount ; loops++){
             unsigned char bufferPixel = frame[0][i];
@@ -57,7 +62,7 @@ void uShiftScreen(unsigned char amount){
     }
 }
 
-void dShiftScreen(unsigned char amount){
+void dShiftScreen(const unsigned char amount){
     for(unsigned char i = 0; i < WIDTH; i++){
         for(unsigned char loops = 0 ; loops < amount ; loops++){
             unsigned char bufferPixel = frame[HEIGHT-1][i];
@@ -69,20 +74,20 @@ void dShiftScreen(unsigned char amount){
     }
 }
 
-void setPixel(unsigned char x, unsigned char y, unsigned char color){
+void setPixel(const unsigned char x, const unsigned char y, const unsigned char color){
     frame[y][x] = color;
 }
 
-void drawHLine(unsigned char line, unsigned char start, unsigned char end, unsigned char color){
+void drawHLine(const unsigned char line, const unsigned char start, const unsigned char end, const unsigned char color){
     unsigned char *thisLine = frame[line];
     for(unsigned char i = start ; i < end ; i++) thisLine[i] = color;
 }
 
-void drawVLine(unsigned char column, unsigned char start, unsigned char end, unsigned char color){
+void drawVLine(const unsigned char column, const unsigned char start, const unsigned char end, const unsigned char color){
     for(unsigned char i = start ; i < end ; i++) frame[i][column] = color;
 }
 
-void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char color){
+void drawLine(const unsigned char x1, const unsigned char y1, const unsigned char x2, const unsigned char y2, const unsigned char color){
     int16_t dx = x2-x1;
     int16_t dy = y2-y1;
     #define abs(x) (x<0 ? -x : x)
@@ -122,7 +127,7 @@ void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned cha
     }
 }
 
-void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color){
+void drawRect(const unsigned char xs, const unsigned char ys, const unsigned char xe, const unsigned char ye, const unsigned char color){
     unsigned char *firstLine = frame[ys];
     unsigned char *secondline = frame[ye];
     for(unsigned char i = xs ; i < xe ; i++){
@@ -135,7 +140,7 @@ void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned cha
     }
 }
 
-void drawBox(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color){
+void drawBox(const unsigned char xs, const unsigned char ys, const unsigned char xe, const unsigned char ye, const unsigned char color){
     for(unsigned char l = ys ; l < ye ; l++){
         unsigned char *thisLine = frame[l];
         for(unsigned char i = xs ; i < xe ; i++){

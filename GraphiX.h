@@ -19,39 +19,41 @@
 
 #define TIMING_STOP_HSYNC 12
 #define TIMING_START_BURST 20
-#define TIMING_STOP_BURST 28
+#define TIMING_STOP_BURST 29
 #define TIMING_START_DRAW_LINE 40
 
 extern volatile unsigned short lineCounter;
-extern volatile bool done, vsync, can_draw;
+extern volatile bool done, vsync, can_draw, enabled;
 extern volatile unsigned char line, state;
 extern unsigned char frame[HEIGHT][WIDTH];
 
 #define CAN_CALCULATE (!can_draw)
 
+//enables display, disabling display yields display time to calculations
+void setEnabled(const bool ena);
 //Fills the whole screen with a color.
-void fillScreen(unsigned char color=BLACK);
+void fillScreen(const unsigned char color=BLACK);
 //Adds a value to each pixel.
-void addScreen(char amount=1);
+void addScreen(const char amount=1);
 //Shifts the whole screen to the right by an amount.
-void rShiftScreen(unsigned char amount=1);
+void rShiftScreen(const unsigned char amount=1);
 //Shifts the whole screen to the left by an amount.
-void lShiftScreen(unsigned char amount=1);
+void lShiftScreen(const unsigned char amount=1);
 //Shifts the whole screen upwards by an amount.
-void uShiftScreen(unsigned char amount=1);
+void uShiftScreen(const unsigned char amount=1);
 //Shifts the whole screen downwards by an amount.
-void dShiftScreen(unsigned char amount=1);
+void dShiftScreen(const unsigned char amount=1);
 //Changes a single pixel
-void setPixel(unsigned char x, unsigned char y, unsigned char color=BLACK);
+void setPixel(const unsigned char x, const unsigned char y, const unsigned char color=BLACK);
 //Draws a horizontal line.
-void drawHLine(unsigned char line, unsigned char start, unsigned char end, unsigned char color=BLACK);
+void drawHLine(const unsigned char line, const unsigned char start, const unsigned char end, const unsigned char color=BLACK);
 //Draws a vertical line.
-void drawVLine(unsigned char column, unsigned char start, unsigned char end, unsigned char color=BLACK);
+void drawVLine(const unsigned char column, const unsigned char start, const unsigned char end, const unsigned char color=BLACK);
 //Draw any line.
-void drawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char color=BLACK);
+void drawLine(const unsigned char x1, const unsigned char y1, const unsigned char x2, const unsigned char y2, const unsigned char color=BLACK);
 //Draws a hollow rectangle.
-void drawRect(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
+void drawRect(const unsigned char xs, const unsigned char ys, const unsigned char xe, const unsigned char ye, const unsigned char color=BLACK);
 //Draws a filled rectangle.
-void drawBox(unsigned char xs, unsigned char ys, unsigned char xe, unsigned char ye, unsigned char color=BLACK);
+void drawBox(const unsigned char xs, const unsigned char ys, const unsigned char xe, const unsigned char ye, const unsigned char color=BLACK);
 
 #endif

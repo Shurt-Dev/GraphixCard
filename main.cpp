@@ -6,20 +6,19 @@
 #include "lowMath.h"
 
 volatile unsigned short lineCounter = 0;
-volatile bool done = 0, vsync = 0, can_draw = 0;
+volatile bool done = 0, vsync = 0, can_draw = 0, enabled = 1;
 volatile unsigned char line = 0, state = FPORCH;
 unsigned char frame[HEIGHT][WIDTH] = {0};
 unsigned char testMatrix[16][16];
 
-void setupTimer0(){
-    TCCR0A = 0x02; // CTC
-    TCCR0B = 0x02; // prescaler = 8
-    OCR0A = 159;   // f = 15625 Hz
-    OCR0B = TIMING_START_DRAW_LINE;    // begin drawing 15 uS after int
-    TIMSK0 = 0x06; // compA interrupt
+void setupTimer3(){
+    TCCR3B = 0x0A; // CTC + prescaler = 8
+    OCR3AL = 159;   // f = 15625 Hz
+    OCR3BL = TIMING_START_DRAW_LINE;    // begin drawing 15 uS after int
+    TIMSK3 = 0x06; // compA + compB interrupt
 }
 
-ISR(TIMER0_COMPA_vect){
+ISR(TIMER3_COMPA_vect){
 
     lineCounter++;
     if(lineCounter > 318) lineCounter = 0;
@@ -32,7 +31,7 @@ ISR(TIMER0_COMPA_vect){
             break;
 
         case INCLINE:
-            can_draw = 1;
+            can_draw = enabled;
             break;
 
         case 312:
@@ -41,53 +40,53 @@ ISR(TIMER0_COMPA_vect){
 
         case 316:
             vsync = 0;
+            done = 0;
             break;
     }
 
-    if(vsync){
-        DDRD &= 127;
+    if(!vsync){
+        DDRD |= 0x01;
     }else{
-        DDRD |= 128;
+        DDRD &= 0xFE;
     }
 
-    OCR0B = TIMING_STOP_HSYNC;
+    OCR3BL = TIMING_STOP_HSYNC;
     state = FPORCH;
-    done = 0;
 }
 
-ISR(TIMER0_COMPB_vect){
+ISR(TIMER3_COMPB_vect){
     //PORTC = 1;
     switch(state){
         case FPORCH:
-            if(vsync){
-                DDRD |= 128;
+            if(!vsync){
+                DDRD &= 0xFE;
             }else{
-                DDRD &= 127;
+                DDRD |= 0x01;
             }
             #ifndef GREYSCALE
             if(can_draw){
-                OCR0B = TIMING_START_BURST;
+                OCR3BL = TIMING_START_BURST;
                 state = START_BURST;
             }else{
-                OCR0B = TIMING_START_DRAW_LINE;
+                OCR3BL = TIMING_START_DRAW_LINE;
                 state = DRAW_LINE;
             }
             #endif
             #ifdef GREYSCALE
-            OCR0B = TIMING_START_DRAW_LINE;
+            OCR3BL = TIMING_START_DRAW_LINE;
             state = DRAW_LINE;
             #endif
             break;
 
         case START_BURST:
             DDRA = BURST;
-            OCR0B = TIMING_STOP_BURST;
+            OCR3BL = TIMING_STOP_BURST;
             state = STOP_BURST;
             break;
 
         case STOP_BURST:
             DDRA = BLACK;
-            OCR0B = TIMING_START_DRAW_LINE;
+            OCR3BL = TIMING_START_DRAW_LINE;
             state = DRAW_LINE;
             break;
 
@@ -123,7 +122,7 @@ int main(){
 
     MCUCR |= (1<<PUD); //Disable pullup resistors
 
-    setupTimer0();
+    setupTimer3();
 
     PORTA = 0xFF;
 
@@ -139,7 +138,7 @@ int main(){
     processShit:
 
     if(CAN_CALCULATE){
-        //addScreen();
+        setEnabled(!enabled);
     }
 
     done = 1;

@@ -6,6 +6,7 @@ it may create visual glitches, such asd chopped frames.
 ---------------------------------------------------------------------------------
  #  | Name          | Parameters                                     | Time (us)|
 ---------------------------------------------------------------------------------
+ ?? | setEnabled    | Enable                                         | 0        |
  ?? | fillScreen    | Color                                          | 4300     |
  ?? | addScreen     | Amount                                         | 6500     |
  ?? | rShiftScreen  | Amount                                         | 5800     |
