@@ -1,8 +1,7 @@
-#include "GraphiX.h"
-#include "Colors.h"
-#include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "GraphiX.h"
+#include "Colors.h"
 #include "lowMath.h"
 
 volatile unsigned short lineCounter = 0;
@@ -106,6 +105,7 @@ ISR(TIMER3_COMPB_vect){
 }
 
 int main(){
+    #ifdef COLOR_PALETTE
     unsigned char bob = 0;
     for(unsigned char l = 0 ; l < 16 ; l++){
         for(unsigned char i = 0 ; i < 16 ; i++){
@@ -113,10 +113,11 @@ int main(){
             bob++;
         }
     }
+    #endif
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            frame[l][i] = testMatrix[(unsigned char)(l / 7.5)][(unsigned char)(i / 7.5)];
-            //frame[l][i] = l+i;
+            //frame[l][i] = testMatrix[(unsigned char)(l / 7.5)][(unsigned char)(i / 7.5)];
+            frame[l][i] = BLACK;
         }
     }
 
@@ -129,16 +130,14 @@ int main(){
     #ifdef DEBUG
     DDRC = 1;
     PORTC = 1;
-    drawLine(59,59,99,89,WHITE);
+    drawCircle(59,59,50,YELLOW);
     PORTC = 0;
     #endif
 
     sei();
 
     processShit:
-
     if(CAN_CALCULATE){
-        setEnabled(!enabled);
     }
 
     done = 1;

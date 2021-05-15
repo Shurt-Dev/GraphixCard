@@ -148,3 +148,16 @@ void drawBox(const unsigned char xs, const unsigned char ys, const unsigned char
         }
     }
 }
+
+void drawCircle(const unsigned char xc, const unsigned char yc, const unsigned char radius, const unsigned char color){
+    #define GON 12
+    unsigned char points[GON][2] = {0};    
+    for(unsigned char i = 0 ; i < GON ; i++){
+        points[i][0] = xc + (((long)(radius << SCALE_FACTOR) * (long)low_cos((PIx2/GON) * i))>>(SCALE_FACTOR<<1));
+        points[i][1] = yc + (((long)(radius << SCALE_FACTOR) * (long)low_sin((PIx2/GON) * i))>>(SCALE_FACTOR<<1));
+    }
+    for(unsigned char i = 1 ; i < GON ; i++){
+        drawLine(points[i-1][0],points[i-1][1],points[i][0],points[i][1],color);
+    }
+    drawLine(points[GON-1][0],points[GON-1][1],points[0][0],points[0][1],color);
+}

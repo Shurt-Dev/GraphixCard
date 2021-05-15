@@ -1,17 +1,17 @@
 #include "lowMath.h"
 
-short lowMath::sin(unsigned short x){
+int low_sin(const unsigned int x){
 
-    int res = ((x<<SCALE_FACTOR) / PI) & 0x03FF;
+    int res = (((unsigned long)x<<SCALE_FACTOR) / PI) & 0x03FF;
     if(res > (1<<SCALE_FACTOR)-1){
         res &= ~(1<<SCALE_FACTOR);
-        short res2 = (res*res)>>SCALE_FACTOR;
+        int res2 = ((unsigned long)res*(unsigned long)res)>>SCALE_FACTOR;
         res = (res - res2) << 2;
         res = ~res + 1;
     }else{
-        short res2 = (res*res)>>SCALE_FACTOR;
+        int res2 = ((unsigned long)res*(unsigned long)res)>>SCALE_FACTOR;
         res = (res - res2) << 2;
     }
 
-    return (short)res;
+    return res;
 }
