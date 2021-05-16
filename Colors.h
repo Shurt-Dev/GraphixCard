@@ -3,11 +3,11 @@
 
 namespace GraphiX{
 
-    #define BURST    0x1F
+    #define BURST    0x17
 
-    #define BLACK    0x07
-    #define WHITE    0x00
-    #define GREY     0x03
+    #define BLACK    0xE7
+    #define WHITE    0xE0
+    #define GREY     0xE3
 
     #define YELLOW   0x1C
     #define ORANGE   0x3C

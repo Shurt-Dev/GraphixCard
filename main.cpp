@@ -8,7 +8,6 @@ volatile unsigned short lineCounter = 0;
 volatile bool done = 0, vsync = 0, can_draw = 0, enabled = 1;
 volatile unsigned char line = 0, state = FPORCH;
 unsigned char frame[HEIGHT][WIDTH] = {0};
-unsigned char testMatrix[16][16];
 
 void setupTimer3(){
     TCCR3B = 0x0A; // CTC + prescaler = 8
@@ -54,7 +53,6 @@ ISR(TIMER3_COMPA_vect){
 }
 
 ISR(TIMER3_COMPB_vect){
-    //PORTC = 1;
     switch(state){
         case FPORCH:
             if(!vsync){
@@ -63,28 +61,8 @@ ISR(TIMER3_COMPB_vect){
                 DDRD |= 0x01;
             }
             #ifndef GREYSCALE
-            if(can_draw){
-                OCR3BL = TIMING_START_BURST;
-                state = START_BURST;
-            }else{
-                OCR3BL = TIMING_START_DRAW_LINE;
-                state = DRAW_LINE;
-            }
+            if(can_draw) DDRA = BURST;
             #endif
-            #ifdef GREYSCALE
-            OCR3BL = TIMING_START_DRAW_LINE;
-            state = DRAW_LINE;
-            #endif
-            break;
-
-        case START_BURST:
-            DDRA = BURST;
-            OCR3BL = TIMING_STOP_BURST;
-            state = STOP_BURST;
-            break;
-
-        case STOP_BURST:
-            DDRA = BLACK;
             OCR3BL = TIMING_START_DRAW_LINE;
             state = DRAW_LINE;
             break;
@@ -101,23 +79,27 @@ ISR(TIMER3_COMPB_vect){
             DDRA = BLACK;
             break;
     }
-    //PORTC = 0;
 }
 
 int main(){
     #ifdef COLOR_PALETTE
-    unsigned char bob = 0;
+    unsigned char testMatrix[16][16];
+    unsigned char color = 0;
     for(unsigned char l = 0 ; l < 16 ; l++){
         for(unsigned char i = 0 ; i < 16 ; i++){
-            testMatrix[l][i] = bob;
-            bob++;
+            testMatrix[l][i] = color;
+            color++;
         }
     }
     #endif
     for(unsigned char l = 0 ; l < HEIGHT ; l++){
         for(unsigned char i = 0 ; i < WIDTH ; i++){
-            //frame[l][i] = testMatrix[(unsigned char)(l / 7.5)][(unsigned char)(i / 7.5)];
+            #ifdef COLOR_PALETTE
+            frame[l][i] = testMatrix[(unsigned char)(l / 7.5)][(unsigned char)(i / 7.5)];
+            #endif
+            #ifndef COLOR_PALETTE
             frame[l][i] = BLACK;
+            #endif
         }
     }
 
@@ -130,7 +112,7 @@ int main(){
     #ifdef DEBUG
     DDRC = 1;
     PORTC = 1;
-    drawCircle(59,59,50,YELLOW);
+    drawSprite(59,59,0);
     PORTC = 0;
     #endif
 
@@ -138,6 +120,7 @@ int main(){
 
     processShit:
     if(CAN_CALCULATE){
+
     }
 
     done = 1;

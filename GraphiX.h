@@ -4,7 +4,7 @@
 #include "Colors.h"
 
 //#define DEBUG
-//#define COLOR_PALETTE
+#define COLOR_PALETTE
 //#define GREYSCALE
 
 #define WIDTH 120
@@ -58,5 +58,7 @@ void drawRect(const unsigned char xs, const unsigned char ys, const unsigned cha
 void drawBox(const unsigned char xs, const unsigned char ys, const unsigned char xe, const unsigned char ye, const unsigned char color=BLACK);
 //Draws a circle
 void drawCircle(const unsigned char xc, const unsigned char yc, const unsigned char radius, const unsigned char color=BLACK);
+//Draws a sprite
+void drawSprite(const unsigned char x, const unsigned char y, const unsigned char spritID);
 
 #endif
