@@ -164,12 +164,26 @@ void drawCircle(const unsigned char xc, const unsigned char yc, const unsigned c
     drawLine(points[GON-1][0],points[GON-1][1],points[0][0],points[0][1],color);
 }
 
-void drawSprite(const unsigned char x, const unsigned char y, const unsigned char spritID){
-    for(unsigned char i = 0 ; i < 8 ; i++){
-        for(unsigned char l = 0 ; l < 8 ; i++){
-            unsigned char pixel = archer[i][l];
-            if(pixel){
-                frame[x+i][y+l] = pixel;
+void drawSprite(const unsigned char x, const unsigned char y, const unsigned char spritID, const unsigned char scale){
+    if(!scale){
+        for(unsigned char i = 0 ; i < 8 ; i++){
+            for(unsigned char l = 0 ; l < 8 ; l++){
+                unsigned char pixel = pgm_read_byte(&archer[i][l]);
+                if(pixel){
+                    frame[x+i][y+l] = pixel;
+                }
+            }
+        }
+    }else{
+        for(unsigned char i = 0 ; i < 8 ; i++){
+            for(unsigned char l = 0 ; l < 8 ; l++){
+                unsigned char pixel = pgm_read_byte(&archer[i][l]);
+                if(pixel){
+                    frame[x+2*i][y+2*l] = pixel;
+                    frame[x+2*i+1][y+2*l] = pixel;
+                    frame[x+2*i][y+2*l+1] = pixel;
+                    frame[x+2*i+1][y+2*l+1] = pixel;
+                }
             }
         }
     }

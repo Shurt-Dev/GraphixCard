@@ -19,4 +19,5 @@ it may create visual glitches, such asd chopped frames.
  ?? | drawLine      | x1 y1 x2 y2 Color                              | 1.22/px  |
  ?? | drawRect      | Xstart Ystart Xend Yend Color                  | 0.29/px  |
  ?? | drawBox       | Xstart Ystart Xend Yend Color                  | 0.34/px  |
+ ?? | drawSprite    | X Y ID Scale=0                                 | 71       |
 ---------------------------------------------------------------------------------

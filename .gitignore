@@ -2,3 +2,5 @@
 GraphixCard.json
 info
 assets/*.png
+
+!assets/color_palette.png

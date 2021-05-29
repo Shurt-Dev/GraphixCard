@@ -1,8 +1,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 #include "GraphiX.h"
 #include "Colors.h"
 #include "lowMath.h"
+#include "assets/output.h"
 
 volatile unsigned short lineCounter = 0;
 volatile bool done = 0, vsync = 0, can_draw = 0, enabled = 1;
@@ -98,7 +100,7 @@ int main(){
             frame[l][i] = testMatrix[(unsigned char)(l / 7.5)][(unsigned char)(i / 7.5)];
             #endif
             #ifndef COLOR_PALETTE
-            frame[l][i] = BLACK;
+            frame[l][i] = pgm_read_byte(&image[l][i]);
             #endif
         }
     }
@@ -112,8 +114,9 @@ int main(){
     #ifdef DEBUG
     DDRC = 1;
     PORTC = 1;
-    drawSprite(59,59,0);
+    drawSprite(39,39,0,0);
     PORTC = 0;
+    drawSprite(89,89,0,1);
     #endif
 
     sei();

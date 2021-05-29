@@ -4,7 +4,7 @@
 #include "Colors.h"
 
 //#define DEBUG
-#define COLOR_PALETTE
+//#define COLOR_PALETTE
 //#define GREYSCALE
 
 #define WIDTH 120
@@ -18,9 +18,7 @@
 #define STOP_BURST 2
 #define DRAW_LINE 3
 
-#define TIMING_STOP_HSYNC 12
-#define TIMING_START_BURST 20
-#define TIMING_STOP_BURST 29
+#define TIMING_STOP_HSYNC 15
 #define TIMING_START_DRAW_LINE 40
 
 extern volatile unsigned short lineCounter;
@@ -59,6 +57,6 @@ void drawBox(const unsigned char xs, const unsigned char ys, const unsigned char
 //Draws a circle
 void drawCircle(const unsigned char xc, const unsigned char yc, const unsigned char radius, const unsigned char color=BLACK);
 //Draws a sprite
-void drawSprite(const unsigned char x, const unsigned char y, const unsigned char spritID);
+void drawSprite(const unsigned char x, const unsigned char y, const unsigned char spritID, const unsigned char scale=0);
 
 #endif
