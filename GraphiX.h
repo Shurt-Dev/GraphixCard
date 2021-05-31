@@ -4,8 +4,9 @@
 #include "Colors.h"
 
 //#define DEBUG
-//#define COLOR_PALETTE
+#define COLOR_PALETTE
 //#define GREYSCALE
+//#include "assets/output.h"
 
 #define WIDTH 120
 #define HEIGHT 120

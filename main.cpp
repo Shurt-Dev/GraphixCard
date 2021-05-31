@@ -2,9 +2,9 @@
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include "GraphiX.h"
+#include "SynthX.h"
 #include "Colors.h"
 #include "lowMath.h"
-#include "assets/output.h"
 
 volatile unsigned short lineCounter = 0;
 volatile bool done = 0, vsync = 0, can_draw = 0, enabled = 1;
@@ -108,6 +108,7 @@ int main(){
     MCUCR |= (1<<PUD); //Disable pullup resistors
 
     setupTimer3();
+    setupVoice2();
 
     PORTA = 0xFF;
 

@@ -3,20 +3,20 @@
 
 namespace GraphiX{
 
-    #define BURST    0x0F
+    #define BURST    0x1F
 
     #define BLACK    0xE7
     #define WHITE    0xE0
     #define GREY     0xE3
 
-    #define GREEN    0x1C
-    #define YELLOW   0x3C
-    #define ORANGE   0x5C
-    #define RED      0x7C
-    #define PINK     0x9C
-    #define PURPLE   0xBC
-    #define BLUE     0xDC
-    #define CYAN     0xFC
+    #define YELLOW   0x1C
+    #define ORANGE   0x3C
+    #define RED      0x5C
+    #define PINK     0x7C
+    #define PURPLE   0x9C
+    #define BLUE     0xBC
+    #define CYAN     0xDC
+    #define GREEN    0xFC
 
     #define DARK_YELLOW   0x1F
     #define DARK_ORANGE   0x3F
